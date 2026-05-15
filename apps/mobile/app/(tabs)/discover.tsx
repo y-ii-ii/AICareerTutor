@@ -67,11 +67,13 @@ function ChoiceCard({ tone, image, title, subtitle, tags, onPress }: (typeof cho
   const palette = tone === "blue" ? bluePalette : violetPalette;
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.choiceCard, { borderColor: palette.border, backgroundColor: palette.bg }, pressed ? styles.choicePressed : null]}>
-      <View style={[styles.cardGlow, { backgroundColor: palette.glow }]} />
-      <Image source={image}style={[styles.choiceImage, tone === "blue" ? styles.compassImage : styles.rocketImage]}resizeMode="contain"/>
+      <View style={styles.imageSlot}>
+        <View style={[styles.cardGlow, { backgroundColor: palette.glow }]} />
+        <Image source={image} style={[styles.choiceImage, tone === "blue" ? styles.compassImage : styles.rocketImage]} resizeMode="contain" />
+      </View>
       <View style={styles.choiceCopy}>
         <View style={styles.choiceTitleRow}>
-          <Text style={styles.choiceTitle} numberOfLines={1}>{title}</Text>
+          <Text style={styles.choiceTitle} numberOfLines={2}>{title}</Text>
           <MaterialIcons name="chevron-right" size={27} color="#0B1D3A" />
         </View>
         <Text style={styles.choiceText}>{subtitle}</Text>
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
   title: {
     width: "86%",
     color: "#0B1D3A",
-    fontSize: 29,
+    fontSize: 26,
     lineHeight: 38,
     fontWeight: "900",
     letterSpacing: 0
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     width: "82%",
     color: "#5C6980",
-    fontSize: 16,
+    fontSize: 15,
     lineHeight: 26
   },
   orbitOne: {
@@ -178,15 +180,15 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   choiceCard: {
-    minHeight: 200,
-    borderRadius: 28,
+    minHeight: 168,
+    borderRadius: radius.xl,
     borderWidth: 1.3,
-    paddingVertical: spacing.lg,
-    paddingLeft: spacing.lg,
+    paddingVertical: spacing.md,
+    paddingLeft: spacing.md,
     paddingRight: spacing.md,
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.lg,
+    gap: spacing.md,
     overflow: "hidden",
     shadowColor: "#1F3A68",
     shadowOpacity: 0.09,
@@ -198,21 +200,30 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.985 }],
     opacity: 0.9
   },
+  imageSlot: {
+    position: "relative",
+    width: 128,
+    height: 128,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0
+  },
   cardGlow: {
     position: "absolute",
-    left: 18,
-    top: 32,
-    width: 138,
-    height: 118,
+    left: 4,
+    top: 10,
+    width: 120,
+    height: 108,
     borderRadius: 70
   },
   choiceImage: {
-    width: 154,
-    height: 140
+    width: 118,
+    height: 118
   },
   choiceCopy: {
     flex: 1,
-    gap: spacing.md
+    minWidth: 0,
+    gap: spacing.sm
   },
   choiceTitleRow: {
     flexDirection: "row",
@@ -223,7 +234,7 @@ const styles = StyleSheet.create({
   choiceTitle: {
     flex: 1,
     color: "#0B1D3A",
-    fontSize: 18,
+    fontSize: 17,
     lineHeight: 27,
     fontWeight: "900",
     letterSpacing: 0
@@ -251,13 +262,13 @@ const styles = StyleSheet.create({
     fontSize: 13
   },
   compassImage: {
-    width: 154,
+    width: 118,
     aspectRatio: 1,
-    transform: [{ translateX: -4 }]
+    transform: [{ translateX: -2 }]
   },
   rocketImage: {
-    width: 154,
-    height: 140
+    width: 118,
+    height: 118
   }
 
 });
