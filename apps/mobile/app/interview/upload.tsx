@@ -1,11 +1,14 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, ImageSourcePropType, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { ConfirmDialog, Screen } from "@/components/ui/primitives";
 import { colors, radius, spacing } from "@/constants/theme";
 
 type IconName = React.ComponentProps<typeof MaterialIcons>["name"];
+
+const uploadIcon = require("../../img/8-1.png") as ImageSourcePropType;
+const textInputFocusStyle = Platform.OS === "web" ? ({ outlineStyle: "none" } as never) : null;
 
 export default function InterviewUpload() {
   const [showExit, setShowExit] = useState(false);
@@ -67,10 +70,10 @@ function UploadPanel({ selected, onPress }: { selected: boolean; onPress: () => 
         <View style={styles.cloudWrap}>
           <View style={styles.cloudSparkOne} />
           <View style={styles.cloudSparkTwo} />
-          <MaterialIcons name={selected ? "check-circle" : "cloud-upload"} size={82} color={selected ? colors.success : colors.primary} />
+          <Image source={uploadIcon} style={styles.uploadIconImage} resizeMode="contain" />
         </View>
-        <Text style={styles.uploadTitle}>{selected ? "已选择 mock_interview_note.txt" : "上传音频或文本"}</Text>
-        <Text style={styles.uploadSubtitle}>支持 MP3、WAV、M4A、TXT、DOCX、PDF</Text>
+        <Text style={[styles.uploadTitle, selected ? styles.uploadTitleSelected : null]}>{selected ? "已选择 mock_interview_note.txt" : "上传音频或文本"}</Text>
+        <Text style={styles.uploadSubtitle}>( 支持 MP3、WAV、M4A、TXT、DOCX、PDF )</Text>
         <View style={styles.fileButton}>
           <MaterialIcons name="folder-open" size={24} color="#fff" />
           <Text style={styles.fileButtonText}>{selected ? "重新选择文件" : "选择文件"}</Text>
@@ -87,8 +90,8 @@ function UploadPanel({ selected, onPress }: { selected: boolean; onPress: () => 
 function IconInput({ icon, placeholder, value, onChangeText, multiline, countLimit }: { icon: IconName; placeholder: string; value: string; onChangeText: (value: string) => void; multiline?: boolean; countLimit?: number }) {
   return (
     <View style={[styles.inputWrap, multiline ? styles.inputWrapMulti : null]}>
-      <MaterialIcons name={icon} size={24} color="#718096" />
-      <TextInput value={value} onChangeText={onChangeText} placeholder={placeholder} placeholderTextColor="#8B96AA" multiline={multiline} style={[styles.input, multiline ? styles.inputMulti : null]} />
+      <MaterialIcons name={icon} size={24} color="#778095" />
+      <TextInput value={value} onChangeText={onChangeText} placeholder={placeholder} placeholderTextColor="#8B96AA" selectionColor={colors.primary} multiline={multiline} style={[styles.input, textInputFocusStyle, multiline ? styles.inputMulti : null]} />
       {countLimit ? <Text style={styles.countText}>{value.length}/{countLimit}</Text> : null}
     </View>
   );
@@ -116,27 +119,27 @@ const styles = StyleSheet.create({
     color: "#0B1D3A",
     fontSize: 25,
     lineHeight: 34,
-    fontWeight: "900",
+    fontWeight: "700",
     letterSpacing: 0
   },
   requiredBadge: {
     borderRadius: radius.sm,
     paddingHorizontal: spacing.sm,
-    paddingVertical: 5,
-    backgroundColor: "#EEF2FF",
+    paddingVertical: 2,
+    backgroundColor: "#E2E7F4",
     borderWidth: 1,
-    borderColor: "#C7D2FE"
+    borderColor: "#C6CBEE"
   },
   requiredText: {
-    color: colors.accent,
+    color: "#6061E9",
     fontSize: 12,
-    fontWeight: "900"
+    fontWeight: "700"
   },
   subtitle: {
     color: "#59677D",
-    fontSize: 14,
+    fontSize: 13,
     lineHeight: 22,
-    fontWeight: "600"
+    fontWeight: "500"
   },
   uploadShell: {
     borderRadius: 28,
@@ -151,7 +154,7 @@ const styles = StyleSheet.create({
     elevation: 2
   },
   uploadDropzone: {
-    minHeight: 332,
+    minHeight: 200,
     borderRadius: 22,
     borderWidth: 1.5,
     borderStyle: "dashed",
@@ -163,14 +166,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FBFF"
   },
   uploadDropzoneSelected: {
-    borderColor: colors.success,
-    backgroundColor: "#F7FEFA"
+    borderColor: "#76A7FF",
+    backgroundColor: "#F8FBFF"
   },
   cloudWrap: {
     width: 120,
-    height: 90,
+    height: 60,
     alignItems: "center",
     justifyContent: "center"
+  },
+  uploadIconImage: {
+    width: 100,
+    height: 100,
+    transform: [{ translateY: 9 }]
   },
   cloudSparkOne: {
     position: "absolute",
@@ -192,17 +200,23 @@ const styles = StyleSheet.create({
   },
   uploadTitle: {
     color: "#0B1D3A",
-    fontSize: 22,
-    lineHeight: 28,
-    fontWeight: "900",
-    textAlign: "center"
+    fontSize: 20,
+    lineHeight: 26,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: -16
+  },
+  uploadTitleSelected: {
+    color: colors.muted,
+    fontSize: 15,
+    fontWeight: "700"
   },
   uploadSubtitle: {
     color: colors.muted,
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: 12,
+    lineHeight: 28,
     textAlign: "center",
-    fontWeight: "600"
+    fontWeight: "400"
   },
   fileButton: {
     minHeight: 54,
@@ -222,8 +236,8 @@ const styles = StyleSheet.create({
   },
   fileButtonText: {
     color: "#fff",
-    fontSize: 17,
-    fontWeight: "900"
+    fontSize: 16,
+    fontWeight: "500"
   },
   privacyLine: {
     flexDirection: "row",
@@ -233,7 +247,7 @@ const styles = StyleSheet.create({
   privacyText: {
     color: "#8B96AA",
     fontSize: 12,
-    fontWeight: "700"
+    fontWeight: "500"
   },
   formCard: {
     borderRadius: 24,
@@ -263,11 +277,11 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: "#0B1D3A",
-    fontSize: 18,
-    fontWeight: "900"
+    fontSize: 17,
+    fontWeight: "600"
   },
   inputWrap: {
-    minHeight: 52,
+    minHeight: 46,
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: "#DCE3EC",
@@ -278,7 +292,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md
   },
   inputWrapMulti: {
-    minHeight: 112,
+    minHeight: 88,
     alignItems: "flex-start",
     paddingTop: spacing.md,
     paddingBottom: spacing.md
@@ -286,13 +300,13 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     color: "#0B1D3A",
-    fontSize: 15,
-    fontWeight: "700",
+    fontSize: 14,
+    fontWeight: "500",
     padding: 0
   },
   inputMulti: {
-    minHeight: 78,
-    lineHeight: 22,
+    minHeight: 58,
+    lineHeight: 20,
     textAlignVertical: "top"
   },
   countText: {
@@ -301,7 +315,7 @@ const styles = StyleSheet.create({
     bottom: spacing.sm,
     color: colors.gray,
     fontSize: 12,
-    fontWeight: "800"
+    fontWeight: "400"
   },
   infoLine: {
     flexDirection: "row",
@@ -313,7 +327,7 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontSize: 13,
     lineHeight: 20,
-    fontWeight: "600"
+    fontWeight: "500"
   },
   startButton: {
     minHeight: 58,
@@ -334,7 +348,7 @@ const styles = StyleSheet.create({
   startButtonText: {
     color: "#fff",
     fontSize: 18,
-    fontWeight: "900"
+    fontWeight: "700"
   },
   startButtonTextDisabled: {
     color: "#7F8A9E"

@@ -354,7 +354,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderColor: "#DDD6FE",
-    backgroundColor: "#F5F3FF"
+    backgroundColor: "#F5F3FF",
+    paddingHorizontal: 20,
+    paddingVertical: 12
   },
   tipIcon: {
     width: 42,
@@ -368,7 +370,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#7B7E9F",
     fontSize: 14,
-    lineHeight: 22
+    lineHeight: 20
   },
   footerTip: {
     textAlign: "center",

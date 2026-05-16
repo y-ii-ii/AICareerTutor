@@ -54,7 +54,7 @@ function StepRow({ index, title, status }: { index: number; title: string; statu
 
 export default function InterviewAnalyzing() {
   useEffect(() => {
-    const timer = setTimeout(() => router.replace("/interview/overview"), 2200);
+    const timer = setTimeout(() => router.replace("/interview/overview"), 10000);
     return () => clearTimeout(timer);
   }, []);
 
