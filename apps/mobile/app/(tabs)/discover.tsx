@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     color: "#0B1D3A",
     fontSize: 26,
     lineHeight: 38,
-    fontWeight: "900",
+    fontWeight: "700",
     letterSpacing: 0
   },
   subtitle: {
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     color: "#0B1D3A",
     fontSize: 17,
     lineHeight: 27,
-    fontWeight: "900",
+    fontWeight: "600",
     letterSpacing: 0
   },
   choiceText: {

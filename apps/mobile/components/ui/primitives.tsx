@@ -48,8 +48,8 @@ export function Screen({ title, subtitle, navTitle, activeTab, backTo, close, on
 function BottomTab({ active }: { active: NonNullable<ScreenProps["activeTab"]> }) {
   const tabs = [
     { label: "发现", icon: "explore", href: "/(tabs)/discover" },
-    { label: "路径", icon: "route", href: "/(tabs)/path" },
-    { label: "面试", icon: "work", href: "/(tabs)/interview" },
+    { label: "路径", icon: "route", href: "/explore/intro" },
+    { label: "面试", icon: "work", href: "/interview/upload" },
     { label: "我的", icon: "person", href: "/(tabs)/me" }
   ] as const;
 

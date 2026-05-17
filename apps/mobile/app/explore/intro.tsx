@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     color: "#071936",
     fontSize: 30,
     lineHeight: 48,
-    fontWeight: "900",
+    fontWeight: "700",
     letterSpacing: 0
   },
   heroText: {
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   featureTitle: {
     color: "#0B1D3A",
     fontSize: 18,
-    fontWeight: "900",
+    fontWeight: "600",
     lineHeight: 26
   },
   featureText: {

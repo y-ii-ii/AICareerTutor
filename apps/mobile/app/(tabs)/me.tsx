@@ -72,7 +72,7 @@ export default function Me() {
             <Image source={focusGraphicImage} style={styles.targetGraphicImage} resizeMode="contain" />
           </View>
         </View>
-        <Pressable onPress={() => router.push(hasExplore ? "/(tabs)/path" : "/interview/training")} style={styles.primaryButton}>
+        <Pressable onPress={() => router.push(hasExplore ? "/explore/path" : "/interview/training")} style={styles.primaryButton}>
           <Text style={styles.primaryButtonText}>继续当前进度</Text>
           <MaterialIcons name="chevron-right" size={23} color="#fff" />
         </Pressable>
@@ -91,7 +91,7 @@ export default function Me() {
             ["最近更新：", "今天"]
           ] : [["暂无记录", "去发现模块完成一次职业方向探索"]]}
           button="查看探索路径"
-          onPress={() => router.push(hasExplore ? "/(tabs)/path" : "/explore/intro")}
+          onPress={() => router.push(hasExplore ? "/explore/path" : "/explore/intro")}
         />
         <ProgressCard
           icon="bar-chart"
@@ -105,7 +105,7 @@ export default function Me() {
             ["仍需加强：", "结果量化表达"]
           ] : [["暂无记录", "上传面试资料后开始复盘"]]}
           button="查看训练进度"
-          onPress={() => router.push(hasInterview ? "/interview/training" : "/interview/upload")}
+          onPress={() => router.push("/interview/training")}
         />
       </View>
 

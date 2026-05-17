@@ -339,8 +339,6 @@ export default function Followup() {
         navTitle="发现"
         close
         onClose={() => setShowExit(true)}
-        title="动态深入了解"
-        subtitle="我会根据你前面的回答，判断是否需要补充追问。"
         footer={
           <View style={styles.footerWrap}>
             <View style={styles.inputBar}>
@@ -374,6 +372,8 @@ export default function Followup() {
           </View>
         }
       >
+        <Text style={styles.pageTitle}>动态深入了解</Text>
+        <Text style={styles.pageSubtitle}>我会根据你前面的回答，判断是否需要补充追问。</Text>
         {showStudyCard ? <ProfileStudyCard ready={ready} progress={studyProgress} /> : null}
 
         {!completingFollowup ? <ThinkingStatus ready={ready} hasQuestions={generatedQuestions.length > 0} /> : null}
@@ -430,6 +430,8 @@ export default function Followup() {
 }
 
 const styles = StyleSheet.create({
+  pageTitle: { color: colors.text, fontSize: 24, fontWeight: "700", lineHeight: 32 },
+  pageSubtitle: { color: colors.muted, fontSize: 14, lineHeight: 21 },
   messageRow: { width: "100%", flexDirection: "row", alignItems: "flex-start", marginBottom: spacing.md },
   messageRowUser: { justifyContent: "flex-end" },
   messageBody: { maxWidth: "100%", gap: spacing.xs },
