@@ -36,7 +36,7 @@ export default function InterviewTraining() {
 
       <View style={styles.goalCard}>
         <View style={styles.targetIcon}>
-          <MaterialIcons name="gps-fixed" size={66} color="#5B6FEA" />
+          <MaterialIcons name="gps-fixed" size={43} color="#5B6FEA" />
         </View>
         <View style={styles.goalCopy}>
           <Text style={styles.goalTitle}>本轮训练目标</Text>
@@ -86,7 +86,7 @@ function TrainingTaskRow({ task, icon, onPress }: { task: TrainingTask; icon: Ic
   return (
     <View style={styles.taskRow}>
       <View style={[styles.taskIcon, { backgroundColor: done ? "#E7F8EF" : task.status === "进行中" ? "#EAF3FF" : "#F1F3F6" }]}>
-        <MaterialIcons name={icon} size={32} color={color} />
+        <MaterialIcons name={icon} size={28} color={color} />
       </View>
       <View style={styles.taskCopy}>
         <Text style={styles.taskTitle}>{task.title}</Text>
@@ -136,30 +136,39 @@ function Stat({ label, value, color }: { label: string; value: string; color: st
 }
 
 function InsightCard({ icon, title, text, color }: { icon: IconName; title: string; text: string; color: string }) {
+  const isProgressCard = color === colors.primary;
+  const isStrengthenCard = !isProgressCard;
+  const cardBackground = isProgressCard ? "#F3F6FD" : "#F3F2FD";
+  const iconBackground = isProgressCard ? "#DEE7FB" : "#E4E3F9";
+  const iconColor = isProgressCard ? "#2265EA" : "#4634C3";
+  const titleColor = isProgressCard ? "#4E7DE3" : "#3D27B7";
   return (
-    <View style={[styles.insightCard, { backgroundColor: color === colors.primary ? "#F0F6FF" : "#F5F0FF" }]}>
-      <View style={[styles.insightIcon, { backgroundColor: `${color}14` }]}>
-        <MaterialIcons name={icon} size={28} color={color} />
+    <View style={[styles.insightCard, { backgroundColor: cardBackground }]}>
+      <View style={[styles.insightIcon, { backgroundColor: iconBackground }]}>
+        <MaterialIcons name={icon} size={28} color={iconColor} />
       </View>
       <View style={styles.insightCopy}>
-        <Text style={[styles.insightTitle, { color }]}>{title}</Text>
-        <Text style={styles.insightText}>{text}</Text>
+        <Text style={[styles.insightTitle, { color: titleColor }]}>{title}</Text>
+        <Text style={[styles.insightText, isProgressCard || isStrengthenCard ? styles.insightTextSmall : null]}>{text}</Text>
       </View>
     </View>
   );
 }
 
 function TimelineRow({ date, text, status, isLast }: { date: string; text: string; status: TaskStatus; isLast?: boolean }) {
-  const color = status === "已完成" ? colors.success : status === "进行中" ? colors.primary : colors.gray;
+  const isDone = status === "已完成";
+  const isDoing = status === "进行中";
+  const dateColor = isDone ? "#23B978" : isDoing ? "#2F6BFF" : "#7C8798";
   return (
     <View style={styles.timelineRow}>
       <View style={styles.timelineAxis}>
-        <View style={[styles.timelineDot, { borderColor: color, backgroundColor: status === "已完成" ? color : "#fff" }]}>
-          {status === "已完成" ? <MaterialIcons name="check" size={14} color="#fff" /> : null}
-        </View>
         {!isLast ? <View style={styles.timelineLine} /> : null}
+        <View style={[styles.timelineDot, isDone ? styles.timelineDotDone : isDoing ? styles.timelineDotDoing : styles.timelineDotTodo]}>
+          {isDone ? <MaterialIcons name="check" size={16} color="#fff" /> : null}
+          {isDoing ? <View style={styles.timelineDotInner} /> : null}
+        </View>
       </View>
-      <Text style={[styles.timelineDate, { color }]}>{date}</Text>
+      <Text style={[styles.timelineDate, { color: dateColor }]}>{date}</Text>
       <Text style={styles.timelineText}>{text}</Text>
     </View>
   );
@@ -167,8 +176,8 @@ function TimelineRow({ date, text, status, isLast }: { date: string; text: strin
 
 const styles = StyleSheet.create({
   hero: { gap: spacing.sm },
-  pageTitle: { color: "#0B1D3A", fontSize: 30, lineHeight: 38, fontWeight: "900", letterSpacing: 0 },
-  subtitle: { color: colors.muted, fontSize: 15, lineHeight: 22, fontWeight: "600" },
+  pageTitle: { color: "#0B1D3A", fontSize: 26, lineHeight: 38, fontWeight: "700", letterSpacing: 0 },
+  subtitle: { color: colors.muted, fontSize: 13, lineHeight: 20, fontWeight: "400" },
   goalCard: {
     flexDirection: "row",
     alignItems: "center",
@@ -184,11 +193,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     elevation: 2
   },
-  targetIcon: { width: 100, height: 100, borderRadius: 50, alignItems: "center", justifyContent: "center", backgroundColor: "#EEF4FF" },
+  targetIcon: { width: 65, height: 65, borderRadius: 32.5, alignItems: "center", justifyContent: "center", backgroundColor: "#EEF4FF" },
   goalCopy: { flex: 1, gap: spacing.sm },
-  goalTitle: { color: "#0B1D3A", fontSize: 18, fontWeight: "900" },
-  goalText: { color: "#24324A", fontSize: 14, lineHeight: 23, fontWeight: "600" },
-  highlight: { color: colors.primary, fontWeight: "900" },
+  goalTitle: { color: "#0B1D3A", fontSize: 18, fontWeight: "700" },
+  goalText: { color: "#24324A", fontSize: 14, lineHeight: 23, fontWeight: "400" },
+  highlight: { color: colors.primary, fontWeight: "500" },
   card: {
     borderRadius: radius.xl,
     padding: spacing.lg,
@@ -202,23 +211,22 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     elevation: 2
   },
-  sectionTitle: { color: "#111827", fontSize: 17, fontWeight: "900" },
+  sectionTitle: { color: "#111827", fontSize: 17, fontWeight: "700" },
   taskList: { gap: spacing.md },
   taskRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.md,
-    minHeight: 106,
     borderRadius: radius.lg,
     padding: spacing.md,
     backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: "#E1E7EF"
   },
-  taskIcon: { width: 62, height: 62, borderRadius: 31, alignItems: "center", justifyContent: "center" },
-  taskCopy: { flex: 1, gap: 5 },
-  taskTitle: { color: "#0B1D3A", fontSize: 16, fontWeight: "900", lineHeight: 22 },
-  taskDesc: { color: colors.muted, fontSize: 12, lineHeight: 18, fontWeight: "600" },
+  taskIcon: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
+  taskCopy: { flex: 1, gap: spacing.sm },
+  taskTitle: { color: "#0F1F3D", fontSize: 14, fontWeight: "500", lineHeight: 20 },
+  taskDesc: { color: "#4B5B78", fontSize: 12, lineHeight: 20 },
   taskRight: { width: 78, alignItems: "flex-end" },
   statusButton: {
     minHeight: 28,
@@ -268,17 +276,18 @@ const styles = StyleSheet.create({
   },
   progressBody: { flexDirection: "row", alignItems: "center", gap: spacing.lg },
   ringWrap: { width: 96, height: 96, alignItems: "center", justifyContent: "center" },
-  ringText: { position: "absolute", color: "#0B1D3A", fontSize: 19, fontWeight: "900" },
+  ringText: { position: "absolute", color: "#0B1D3A", fontSize: 19, fontWeight: "700" },
   stat: { flex: 1, alignItems: "center", gap: spacing.xs },
   statLabel: { color: colors.muted, fontSize: 12, fontWeight: "700" },
-  statValue: { fontSize: 22, fontWeight: "900" },
+  statValue: { fontSize: 22, fontWeight: "700" },
   statDivider: { width: 1, height: 46, backgroundColor: colors.border },
   insightGrid: { flexDirection: "row", gap: spacing.md },
   insightCard: { flex: 1, minHeight: 96, borderRadius: radius.lg, padding: spacing.md, flexDirection: "row", alignItems: "center", gap: spacing.md },
-  insightIcon: { width: 56, height: 56, borderRadius: 28, alignItems: "center", justifyContent: "center" },
+  insightIcon: { width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center" },
   insightCopy: { flex: 1, gap: 4 },
-  insightTitle: { fontSize: 14, fontWeight: "900" },
-  insightText: { color: "#0B1D3A", fontSize: 13, lineHeight: 18, fontWeight: "700" },
+  insightTitle: { fontSize: 14, fontWeight: "500" },
+  insightText: { color: "#4B5563", fontSize: 13, lineHeight: 18, fontWeight: "500" },
+  insightTextSmall: { fontSize: 12, lineHeight: 17 },
   timelineCard: {
     borderRadius: radius.xl,
     padding: spacing.lg,
@@ -292,10 +301,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     elevation: 2
   },
-  timelineRow: { flexDirection: "row", alignItems: "flex-start", minHeight: 36, gap: spacing.md },
-  timelineAxis: { width: 24, alignItems: "center" },
-  timelineDot: { width: 22, height: 22, borderRadius: 11, borderWidth: 3, alignItems: "center", justifyContent: "center" },
-  timelineLine: { width: 2, flex: 1, backgroundColor: "#DCE3EC", marginTop: 2 },
-  timelineDate: { width: 58, fontSize: 15, lineHeight: 22, fontWeight: "900" },
-  timelineText: { flex: 1, color: "#374151", fontSize: 14, lineHeight: 22, fontWeight: "700" }
+  timelineRow: { flexDirection: "row", alignItems: "center", minHeight: 30, gap: spacing.md },
+  timelineAxis: { width: 24, alignSelf: "stretch", alignItems: "center", justifyContent: "center", position: "relative" },
+  timelineDot: { alignItems: "center", justifyContent: "center", zIndex: 1 },
+  timelineDotTodo: { width: 14, height: 14, borderRadius: 7, borderWidth: 3, borderColor: "#98A2B3", backgroundColor: "#fff" },
+  timelineDotDone: { width: 24, height: 24, borderRadius: 12, borderWidth: 0, borderColor: "#23B978", backgroundColor: "#23B978" },
+  timelineDotDoing: { width: 22, height: 22, borderRadius: 11, borderWidth: 3, borderColor: "#2F6BFF", backgroundColor: "#fff" },
+  timelineDotInner: { width: 8, height: 8, borderRadius: 4, backgroundColor: "#A9C8FF" },
+  timelineLine: { position: "absolute", top: "50%", bottom: -22, width: 2, backgroundColor: "#DCE3EC", zIndex: 0 },
+  timelineDate: { width: 58, fontSize: 15, lineHeight: 22, fontWeight: "500" },
+  timelineText: { flex: 1, color: "#374151", fontSize: 14, lineHeight: 22, fontWeight: "400" }
 });
