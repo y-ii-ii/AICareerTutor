@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { ReactNode, useMemo } from "react";
 import { Modal, Platform, Pressable, ScrollView, StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from "react-native";
-import Svg, { Circle, Line, Polygon } from "react-native-svg";
+import Svg, { Circle, Line, Polygon, Text as SvgText } from "react-native-svg";
 import { colors, radius, spacing } from "@/constants/theme";
 import { TaskStatus } from "@/types/domain";
 
@@ -278,10 +278,16 @@ export function UploadCard({ selected, onPress }: { selected: boolean; onPress: 
   );
 }
 
-export function AbilityRadarChart({ values = [78, 72, 70, 64, 68] }: { values?: number[] }) {
+export function AbilityRadarChart({
+  values = [78, 72, 70, 64, 68],
+  labels = ["结构化表达", "沟通协作", "项目推进", "数据理解", "逻辑分析"]
+}: {
+  values?: number[];
+  labels?: string[];
+}) {
   const points = useMemo(() => {
-    const center = 70;
-    const max = 55;
+    const center = 80;
+    const max = 45;
     return values
       .map((value, index) => {
         const angle = (Math.PI * 2 * index) / values.length - Math.PI / 2;
@@ -290,17 +296,30 @@ export function AbilityRadarChart({ values = [78, 72, 70, 64, 68] }: { values?: 
       })
       .join(" ");
   }, [values]);
-  const axes = [0, 1, 2, 3, 4].map((index) => {
-    const angle = (Math.PI * 2 * index) / 5 - Math.PI / 2;
-    return <Line key={index} x1="70" y1="70" x2={70 + Math.cos(angle) * 55} y2={70 + Math.sin(angle) * 55} stroke={colors.border} />;
+  const axes = values.map((_, index) => {
+    const angle = (Math.PI * 2 * index) / values.length - Math.PI / 2;
+    return <Line key={index} x1="80" y1="80" x2={80 + Math.cos(angle) * 45} y2={80 + Math.sin(angle) * 45} stroke={colors.border} />;
+  });
+  const labelNodes = values.map((_, index) => {
+    const angle = (Math.PI * 2 * index) / values.length - Math.PI / 2;
+    const angleCos = Math.cos(angle);
+    const x = angleCos > 0.25 ? 154 : angleCos < -0.25 ? 6 : 80;
+    const y = 80 + Math.sin(angle) * 57;
+    const textAnchor = angleCos > 0.25 ? "end" : angleCos < -0.25 ? "start" : "middle";
+    return (
+      <SvgText key={labels[index] ?? index} x={x} y={y} fill="#64748B" fontSize="8" fontWeight="500" textAnchor={textAnchor} alignmentBaseline="middle">
+        {labels[index] ?? ""}
+      </SvgText>
+    );
   });
   return (
-    <Svg width={150} height={150} viewBox="0 0 140 140">
-      <Circle cx="70" cy="70" r="55" stroke={colors.border} fill="none" />
-      <Circle cx="70" cy="70" r="36" stroke={colors.border} fill="none" />
-      <Circle cx="70" cy="70" r="18" stroke={colors.border} fill="none" />
+    <Svg width={160} height={160} viewBox="0 0 160 160">
+      <Circle cx="80" cy="80" r="45" stroke={colors.border} fill="none" />
+      <Circle cx="80" cy="80" r="30" stroke={colors.border} fill="none" />
+      <Circle cx="80" cy="80" r="15" stroke={colors.border} fill="none" />
       {axes}
       <Polygon points={points} fill={`${colors.primary}35`} stroke={colors.primary} strokeWidth="2" />
+      {labelNodes}
     </Svg>
   );
 }

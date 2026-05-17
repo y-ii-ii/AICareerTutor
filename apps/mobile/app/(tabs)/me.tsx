@@ -1,13 +1,14 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from "react-native";
 import { AbilityRadarChart, Screen } from "@/components/ui/primitives";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { colors, radius, spacing } from "@/constants/theme";
 import { useAppStore } from "@/store/useAppStore";
 
 type IconName = React.ComponentProps<typeof MaterialIcons>["name"];
+const focusGraphicImage = require("../../img/12-1.png") as ImageSourcePropType;
 
 export default function Me() {
   const { avatarUri, setAvatarUri, directions, savedDirectionId, savedTasks, trainingTasks, profileMode } = useAppStore();
@@ -36,7 +37,7 @@ export default function Me() {
     <Screen navTitle="我的" activeTab="我的">
       <View style={styles.profileCard}>
         <Pressable onPress={pickAvatar} style={styles.avatarWrap}>
-          <UserAvatar size={78} />
+          <UserAvatar size={52} />
           <View style={styles.cameraBadge}>
             <MaterialIcons name={avatarUri ? "edit" : "photo-camera"} size={16} color="#fff" />
           </View>
@@ -48,23 +49,27 @@ export default function Me() {
             {hasInterview ? <MiniBadge icon="show-chart" text="面试提升中" color={colors.accent} /> : null}
           </View>
         </View>
-        <MaterialIcons name="chevron-right" size={28} color={colors.gray} />
       </View>
 
       <View style={styles.focusCard}>
         <View style={styles.focusHeader}>
-          <View style={styles.focusIcon}>
-            <MaterialIcons name="gps-fixed" size={25} color="#fff" />
-          </View>
           <View style={styles.focusCopy}>
-            <Text style={styles.sectionTitle}>当前重点</Text>
+            <View style={styles.focusTitleRow}>
+              <View style={styles.focusTitleBar} />
+              <Text style={styles.sectionTitle}>当前重点</Text>
+            </View>
             <Text style={styles.focusText}>
-              {hasExplore ? `你正在探索方向：${savedDirection.title}` : "你正在进行面试训练：AI产品经理一面"}
+              {hasExplore ? "你正在探索方向：" : "你正在进行面试训练："}
+              <Text style={styles.focusHighlight}>{hasExplore ? savedDirection.title : "AI产品经理一面"}</Text>
             </Text>
-            <Text style={styles.focusSubText}>{hasExplore ? `本周还有 ${todoExplore} 个探索任务待完成` : `当前训练任务完成 ${trainingDone}/3`}</Text>
+            <Text style={styles.focusSubText}>
+              {hasExplore ? "本周还有 " : "当前训练任务完成 "}
+              <Text style={styles.focusHighlight}>{hasExplore ? todoExplore : trainingDone}</Text>
+              {hasExplore ? " 个探索任务待完成" : "/3"}
+            </Text>
           </View>
           <View style={styles.targetGraphic}>
-            <MaterialIcons name="track-changes" size={58} color={colors.primary} />
+            <Image source={focusGraphicImage} style={styles.targetGraphicImage} resizeMode="contain" />
           </View>
         </View>
         <Pressable onPress={() => router.push(hasExplore ? "/(tabs)/path" : "/interview/training")} style={styles.primaryButton}>
@@ -109,23 +114,23 @@ export default function Me() {
           <View style={[styles.titleIcon, { backgroundColor: "#F0E9FF" }]}>
             <MaterialIcons name="workspace-premium" size={21} color={colors.accent} />
           </View>
-          <Text style={styles.sectionTitle}>成长画像</Text>
+          <Text style={styles.growthTitle}>成长画像</Text>
         </View>
         <View style={styles.growthBody}>
           <View style={styles.skillList}>
             {[
-              ["结构化表达", "up", colors.primary],
-              ["沟通协作", "flat", colors.success],
-              ["项目推进", "up", colors.warning],
-              ["数据理解", "up", colors.accent],
-              ["逻辑分析", "up", "#60A5FA"]
-            ].map(([label, trend, color]) => (
-              <View key={label} style={styles.skillRow}>
-                <View style={[styles.skillIcon, { backgroundColor: `${color}16` }]}>
-                  <MaterialIcons name="verified" size={16} color={color} />
+              { label: "结构化表达", icon: "format-align-left", trend: "up", color: colors.primary },
+              { label: "沟通协作", icon: "groups", trend: "flat", color: colors.success },
+              { label: "项目推进", icon: "flag", trend: "up", color: colors.warning },
+              { label: "数据理解", icon: "bar-chart", trend: "up", color: colors.accent },
+              { label: "逻辑分析", icon: "psychology", trend: "up", color: "#60A5FA" }
+            ].map((skill) => (
+              <View key={skill.label} style={styles.skillRow}>
+                <View style={[styles.skillIcon, { backgroundColor: `${skill.color}16` }]}>
+                  <MaterialIcons name={skill.icon as IconName} size={16} color={skill.color} />
                 </View>
-                <Text style={styles.skillText}>{label}</Text>
-                <MaterialIcons name={trend === "up" ? "arrow-upward" : "remove"} size={17} color={trend === "up" ? colors.success : colors.gray} />
+                <Text style={styles.skillText}>{skill.label}</Text>
+                <MaterialIcons name={skill.trend === "up" ? "arrow-upward" : "remove"} size={17} color={skill.trend === "up" ? colors.success : colors.gray} />
               </View>
             ))}
           </View>
@@ -137,9 +142,9 @@ export default function Me() {
       </View>
 
       <View style={styles.recordCard}>
-        <RecordRow icon="manage-search" color={colors.primary} title="查看全部探索记录" onPress={() => router.push("/(tabs)/path")} />
-        <RecordRow icon="question-answer" color={colors.accent} title="查看全部面试复盘" onPress={() => router.push("/(tabs)/interview")} />
-        <RecordRow icon="self-improvement" color={colors.warning} title="查看成长轨迹" onPress={() => router.push("/interview/training")} last />
+        <RecordRow icon="manage-search" color={colors.primary} title="查看全部探索记录" />
+        <RecordRow icon="question-answer" color={colors.accent} title="查看全部面试复盘" />
+        <RecordRow icon="self-improvement" color={colors.warning} title="查看成长轨迹" last />
       </View>
     </Screen>
   );
@@ -162,13 +167,12 @@ function ProgressCard({ icon, title, color, enabled, lines, button, onPress }: {
           <MaterialIcons name={icon} size={22} color={color} />
         </View>
         <Text style={styles.smallCardTitle}>{title}</Text>
-        <MaterialIcons name="chevron-right" size={24} color={colors.gray} />
       </View>
       <View style={styles.metricList}>
         {lines.map(([label, value]) => (
           <View key={label} style={styles.metricRow}>
             <Text style={styles.metricLabel}>{label}</Text>
-            <Text style={[styles.metricValue, { color: enabled ? color : colors.muted }]} numberOfLines={1}>{value}</Text>
+            <Text style={styles.metricValue} numberOfLines={1}>{value}</Text>
           </View>
         ))}
       </View>
@@ -180,15 +184,15 @@ function ProgressCard({ icon, title, color, enabled, lines, button, onPress }: {
   );
 }
 
-function RecordRow({ icon, color, title, onPress, last }: { icon: IconName; color: string; title: string; onPress: () => void; last?: boolean }) {
+function RecordRow({ icon, color, title, last }: { icon: IconName; color: string; title: string; last?: boolean }) {
   return (
-    <Pressable onPress={onPress} style={[styles.recordRow, last ? styles.recordRowLast : null]}>
+    <View style={[styles.recordRow, last ? styles.recordRowLast : null]}>
       <View style={[styles.recordIcon, { backgroundColor: `${color}16` }]}>
         <MaterialIcons name={icon} size={22} color={color} />
       </View>
       <Text style={styles.recordText}>{title}</Text>
       <MaterialIcons name="chevron-right" size={25} color={colors.gray} />
-    </Pressable>
+    </View>
   );
 }
 
@@ -210,43 +214,47 @@ const styles = StyleSheet.create({
   },
   avatarWrap: { position: "relative" },
   cameraBadge: { position: "absolute", right: -2, bottom: -2, width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: colors.primary, borderWidth: 2, borderColor: "#fff" },
-  profileCopy: { flex: 1, gap: spacing.sm },
-  name: { color: "#0B1D3A", fontSize: 30, lineHeight: 36, fontWeight: "900" },
-  badgeRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
-  miniBadge: { minHeight: 30, borderRadius: radius.pill, paddingHorizontal: spacing.sm, flexDirection: "row", alignItems: "center", gap: 5 },
-  miniBadgeText: { fontSize: 12, fontWeight: "900" },
+  profileCopy: { flex: 1, gap: 1 },
+  name: { color: "#0B1D3A", fontSize:20, lineHeight: 36, fontWeight: "500" },
+  badgeRow: { flexDirection: "row", flexWrap: "nowrap", gap: spacing.xs },
+  miniBadge: { minHeight: 28, borderRadius: radius.pill, paddingHorizontal: 6, flexDirection: "row", alignItems: "center", gap: 4 },
+  miniBadgeText: { fontSize: 11, fontWeight: "400" },
   focusCard: { borderRadius: radius.xl, padding: spacing.lg, backgroundColor: "#F2F7FF", borderWidth: 1, borderColor: "#D9E8FF", gap: spacing.md, shadowColor: "#1F4FA3", shadowOpacity: 0.08, shadowRadius: 18, shadowOffset: { width: 0, height: 8 }, elevation: 2 },
   focusHeader: { flexDirection: "row", alignItems: "center", gap: spacing.md },
-  focusIcon: { width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center", backgroundColor: colors.primary },
   focusCopy: { flex: 1, gap: 5 },
-  sectionTitle: { color: "#0B1D3A", fontSize: 18, fontWeight: "900" },
-  focusText: { color: "#0B1D3A", fontSize: 15, lineHeight: 22, fontWeight: "700" },
-  focusSubText: { color: "#345077", fontSize: 14, lineHeight: 20, fontWeight: "600" },
-  targetGraphic: { width: 92, height: 74, alignItems: "center", justifyContent: "center" },
-  primaryButton: { minHeight: 52, borderRadius: radius.md, backgroundColor: "#0B63F6", alignItems: "center", justifyContent: "center", flexDirection: "row", gap: spacing.sm },
-  primaryButtonText: { color: "#fff", fontSize: 16, fontWeight: "900" },
+  focusTitleRow: { position: "relative", justifyContent: "center" },
+  focusTitleBar: { position: "absolute", left: -10, width: 4, height: 17, borderRadius: 3, backgroundColor: "#0B63F6" },
+  sectionTitle: { color: "#0B1D3A", fontSize: 16, fontWeight: "600" },
+  focusText: { color: "#0B1D3A", fontSize: 14, lineHeight: 22, fontWeight: "500" },
+  focusSubText: { color: "#345077", fontSize: 14, lineHeight: 20, fontWeight: "500" },
+  focusHighlight: { color: "#0B63F6", fontSize: 15, fontWeight: "600" },
+  targetGraphic: { width: 108, height: 92, alignItems: "center", justifyContent: "center" },
+  targetGraphicImage: { width: 108, height: 92 },
+  primaryButton: { minHeight: 40, borderRadius: radius.md, backgroundColor: "#0B63F6", alignItems: "center", justifyContent: "center", flexDirection: "row", gap: spacing.sm },
+  primaryButtonText: { color: "#fff", fontSize: 15, fontWeight: "500" },
   dualCards: { flexDirection: "row", gap: spacing.md },
   progressCard: { flex: 1, borderRadius: radius.lg, padding: spacing.md, backgroundColor: "#fff", borderWidth: 1, borderColor: "#E5EAF2", gap: spacing.md, shadowColor: "#1F2937", shadowOpacity: 0.06, shadowRadius: 14, shadowOffset: { width: 0, height: 8 }, elevation: 2 },
   cardTitleRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
-  titleIcon: { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
-  smallCardTitle: { flex: 1, color: "#0B1D3A", fontSize: 16, fontWeight: "900", lineHeight: 21 },
+  titleIcon: { width: 26, height: 26, borderRadius: 13, alignItems: "center", justifyContent: "center" },
+  smallCardTitle: { flex: 1, color: "#0B1D3A", fontSize: 15, fontWeight: "500", lineHeight: 21 },
   metricList: { gap: spacing.sm },
   metricRow: { gap: 2 },
-  metricLabel: { color: "#334155", fontSize: 12, lineHeight: 18, fontWeight: "800" },
-  metricValue: { fontSize: 13, lineHeight: 19, fontWeight: "900" },
+  metricLabel: { color: "#334155", fontSize: 13, lineHeight: 18, fontWeight: "600" },
+  metricValue: { color: "#64748B", fontSize: 12, lineHeight: 16, fontWeight: "500" },
   outlineButton: { minHeight: 38, borderRadius: radius.md, borderWidth: 1, alignItems: "center", justifyContent: "center", flexDirection: "row", gap: 4 },
-  outlineButtonText: { fontSize: 14, fontWeight: "900" },
+  outlineButtonText: { fontSize: 14, fontWeight: "700" },
   growthCard: { borderRadius: radius.xl, padding: spacing.lg, backgroundColor: "#fff", borderWidth: 1, borderColor: "#E5EAF2", gap: spacing.md, shadowColor: "#1F2937", shadowOpacity: 0.06, shadowRadius: 14, shadowOffset: { width: 0, height: 8 }, elevation: 2 },
   growthBody: { flexDirection: "row", alignItems: "center", gap: spacing.md },
   skillList: { flex: 1, gap: spacing.sm },
   skillRow: { minHeight: 34, borderRadius: radius.sm, paddingHorizontal: spacing.sm, backgroundColor: "#fff", borderWidth: 1, borderColor: "#E5EAF2", flexDirection: "row", alignItems: "center", gap: spacing.sm },
-  skillIcon: { width: 22, height: 22, borderRadius: 8, alignItems: "center", justifyContent: "center" },
-  skillText: { flex: 1, color: "#0B1D3A", fontSize: 13, fontWeight: "800" },
+  skillIcon: { width: 20, height: 20, borderRadius: 8, alignItems: "center", justifyContent: "center" },
+  skillText: { flex: 1, color: "#0B1D3A", fontSize: 13, fontWeight: "500" },
+  growthTitle: { color: "#0B1D3A", fontSize: 16, fontWeight: "600" },
   radarWrap: { width: 160, alignItems: "center" },
-  growthHint: { color: colors.muted, fontSize: 13, lineHeight: 20, fontWeight: "600" },
+  growthHint: { color: colors.muted, fontSize: 12, lineHeight: 20, fontWeight: "400" },
   recordCard: { borderRadius: radius.xl, backgroundColor: "#fff", borderWidth: 1, borderColor: "#E5EAF2", overflow: "hidden", shadowColor: "#1F2937", shadowOpacity: 0.06, shadowRadius: 14, shadowOffset: { width: 0, height: 8 }, elevation: 2 },
-  recordRow: { minHeight: 62, paddingHorizontal: spacing.lg, flexDirection: "row", alignItems: "center", gap: spacing.md, borderBottomWidth: 1, borderBottomColor: "#EEF2F7" },
+  recordRow: { minHeight: 50, paddingHorizontal: spacing.lg, flexDirection: "row", alignItems: "center", gap: spacing.md, borderBottomWidth: 1, borderBottomColor: "#EEF2F7" },
   recordRowLast: { borderBottomWidth: 0 },
-  recordIcon: { width: 34, height: 34, borderRadius: 10, alignItems: "center", justifyContent: "center" },
-  recordText: { flex: 1, color: "#0B1D3A", fontSize: 16, fontWeight: "900" }
+  recordIcon: { width: 30, height: 30, borderRadius: 10, alignItems: "center", justifyContent: "center" },
+  recordText: { flex: 1, color: "#0B1D3A", fontSize: 14, fontWeight: "500" }
 });
